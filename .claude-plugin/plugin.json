@@ -1,0 +1,10 @@
+{
+  "name": "prospect-contact-enrichment",
+  "version": "0.1.5",
+  "description": "Find sourced business contact channels for scored prospects and measure verification gaps.",
+  "author": {
+    "name": "Audienti"
+  },
+  "homepage": "https://github.com/audienti/prospect-contact-enrichment",
+  "repository": "https://github.com/audienti/prospect-contact-enrichment"
+}

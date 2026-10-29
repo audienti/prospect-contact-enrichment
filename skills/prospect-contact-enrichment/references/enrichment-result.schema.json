@@ -1,0 +1,242 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "number",
+      "const": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "completed",
+        "pending",
+        "partial"
+      ]
+    },
+    "channels": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "format": "email",
+              "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+            },
+            "channel": {
+              "type": "string",
+              "enum": [
+                "email",
+                "phone"
+              ]
+            },
+            "verified": {
+              "type": "boolean",
+              "const": true
+            },
+            "provider": {
+              "type": "string",
+              "minLength": 1
+            },
+            "verificationStatus": {
+              "type": "string",
+              "enum": [
+                "valid",
+                "verified"
+              ]
+            },
+            "verificationMethod": {
+              "type": "string",
+              "minLength": 1
+            },
+            "validator": {
+              "type": "string",
+              "minLength": 1
+            },
+            "observedAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+            }
+          },
+          "required": [
+            "value",
+            "verified",
+            "provider",
+            "verificationStatus",
+            "verificationMethod"
+          ],
+          "additionalProperties": {}
+        },
+        "phone": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "pattern": "^\\+[1-9]\\d{7,14}$"
+            },
+            "channel": {
+              "type": "string",
+              "enum": [
+                "email",
+                "phone"
+              ]
+            },
+            "verified": {
+              "type": "boolean",
+              "const": true
+            },
+            "provider": {
+              "type": "string",
+              "minLength": 1
+            },
+            "verificationStatus": {
+              "type": "string",
+              "enum": [
+                "valid",
+                "verified"
+              ]
+            },
+            "verificationMethod": {
+              "type": "string",
+              "minLength": 1
+            },
+            "validator": {
+              "type": "string",
+              "minLength": 1
+            },
+            "observedAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+            }
+          },
+          "required": [
+            "value",
+            "verified",
+            "provider",
+            "verificationStatus",
+            "verificationMethod"
+          ],
+          "additionalProperties": {}
+        }
+      },
+      "additionalProperties": false
+    },
+    "candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string",
+            "enum": [
+              "email",
+              "phone"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "minLength": 1
+          },
+          "provider": {
+            "type": "string",
+            "minLength": 1
+          },
+          "verified": {
+            "type": "boolean",
+            "const": false
+          }
+        },
+        "required": [
+          "channel",
+          "value",
+          "provider",
+          "verified"
+        ],
+        "additionalProperties": {}
+      }
+    },
+    "attempts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "minLength": 1
+          },
+          "operation": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1
+          },
+          "jobId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "provider",
+          "operation",
+          "status",
+          "jobId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "outcomes": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "enum": [
+          "email",
+          "phone"
+        ]
+      },
+      "additionalProperties": {
+        "type": "string",
+        "enum": [
+          "verified",
+          "pending",
+          "blocked",
+          "unverified",
+          "not_found",
+          "missing_validator",
+          "no_provider"
+        ]
+      }
+    },
+    "nextAction": {
+      "type": "string",
+      "enum": [
+        "prepare_engagement",
+        "await_provider",
+        "resolve_provider",
+        "needs_contact_source"
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "status",
+    "channels",
+    "candidates",
+    "attempts",
+    "outcomes",
+    "nextAction"
+  ],
+  "additionalProperties": false
+}
