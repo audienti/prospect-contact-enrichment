@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.6 — 2026-10-29
+
+- Require confirmed person/employer identity before provider enrichment; suppress unmatched profile summaries.
+- Keep provider-only phone verification labels as unverified candidates.
+- State that pending-job resumption belongs to the host adapter.
+
 ## 0.1.5 — 2026-10-29
 
 - Add a portable public/provider handoff while preserving existing host workflows.

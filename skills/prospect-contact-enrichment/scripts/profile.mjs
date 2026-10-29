@@ -15,7 +15,7 @@ export function profileFields(person,company,data,observedAt){
  const sameName=!!personName&&norm([data.firstName,data.lastName].filter(Boolean).join(' '))===personName;
  const sameUrl=slug(data.linkedinUrl)===slug(person.linkedin)&&!!slug(person.linkedin);
  const confirmed=sameName&&sameUrl&&!!current;
- const fields={linkedinProfileVerification:{status:confirmed?'confirmed':'needs_review',method:'provider_profile_retrieval',sourceUrl:data.linkedinUrl,observedAt,nameMatched:sameName,profileMatched:sameUrl,companyMatched:!!current},profileSummary:{headline:data.headline??null,location:data.location?.linkedinText??null,countryCode:data.location?.countryCode??null,observedAt,sourceUrl:data.linkedinUrl}};
+ const fields={linkedinProfileVerification:{status:confirmed?'confirmed':'needs_review',method:'provider_profile_retrieval',sourceUrl:data.linkedinUrl,observedAt,nameMatched:sameName,profileMatched:sameUrl,companyMatched:!!current},...(confirmed?{profileSummary:{headline:data.headline??null,location:data.location?.linkedinText??null,countryCode:data.location?.countryCode??null,observedAt,sourceUrl:data.linkedinUrl}}:{})};
  return {fields,...(confirmed&&current.position?{title:current.position}:{})};
 }
 export function activityFields(person,data,observedAt,operation='posts'){

@@ -51,7 +51,7 @@ Complete the selected batch, save results, and report: people checked, published
 
 ## Configured provider waterfall
 
-Use `scripts/waterfall.mjs` through the host's authorized provider adapter; Exo's contact-enrichment workflow is one existing adapter. The host discovers installed providers, handles credentials, approval and budget reservations, and stores results on the existing prospect. Use only configured providers. Email requires an explicit valid verification result. Catch-all, unknown, generic, and wrong-company addresses do not qualify. Phone research proceeds independently. A pending lookup remains pending, and provider errors remain blocked rather than becoming a data miss. Resume existing job IDs instead of submitting duplicate searches. Exo cost reservations are estimates unless a provider supplies actual billing.
+Use `scripts/waterfall.mjs` through the host's authorized provider adapter; Exo's contact-enrichment workflow is one existing adapter. The host discovers installed providers, handles credentials, approval and budget reservations, and stores results on the existing prospect. Use only configured providers. Email requires an explicit valid verification result. Catch-all, unknown, generic, and wrong-company addresses do not qualify. Phone research proceeds independently. A pending lookup remains pending, and provider errors remain blocked rather than becoming a data miss. The host adapter owns pending-job state: before invoking a search, its `call` callback must resume/poll a saved matching job ID instead of resubmitting it. This stateless helper records returned job IDs but does not persist or resume jobs itself. Exo cost reservations are estimates unless a provider supplies actual billing.
 
 ## Profile and activity evidence
 
@@ -66,3 +66,5 @@ Run the full configured phone waterfall after a miss. A diagnostic provider filt
 ## Result contract
 
 The waterfall returns version 1 of the enrichment decision contract. Exo validates channels, outcomes and readiness together before writing contact fields. See `references/enrichment-result.schema.json`. Provider errors are attempts, not contact data. Preserve verified channels on failed lookups; do not claim an unverified candidate is verified.
+
+New phone results carrying only a provider `valid` or `verified` label remain unverified candidates; this helper does not independently verify phone ownership. Already independently verified channels supplied by the host may be preserved under the existing freshness rule. No verification calls or messages are sent by this package.

@@ -3,6 +3,7 @@ const emailLike=v=>typeof v==='string'&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 const phoneLike=v=>typeof v==='string'&&/^\+[1-9]\d{7,14}$/.test(v);
 const generic=/^(info|hello|sales|support|contact|admin|office|team|careers|jobs|noreply|no-reply)$/i;
 export async function waterfall({input,providers,call,channels:requestedChannels=["email","phone"],existingChannels={},now=Date.now()}) {
+ if(input?.identityConfirmed!==true)throw new TypeError('Contact enrichment requires confirmed person and current-employer identity');
  const attempts=[],channels={},candidates=[],outcomes={};
  const available=providers.filter(p=>p.ready).sort((a,b)=>a.priority-b.priority||a.id.localeCompare(b.id));
  const ask=async(p,op,data)=>{let r;try{r=await call(p,op,data);}catch{r={status:'provider_failed'};}attempts.push({provider:p.id,operation:op,status:r.status,jobId:r.jobId??null});return r;};
@@ -34,7 +35,9 @@ export async function waterfall({input,providers,call,channels:requestedChannels
       if(result.status==='ok'&&result.verdict==='valid'&&!['role_based','disposable','toxic'].includes(result.subStatus)){channels.email={...c,verified:true,verificationMethod:'email_validation',validator:validator.id,verificationStatus:'valid'};break;}
      }
     }else if(phoneLike(c.value)&&c.kind==='direct'&&['valid','verified'].includes(c.verificationStatus)){
-     channels.phone={...c,verified:true,verificationMethod:'provider_reported',verificationStatus:c.verificationStatus};
+     // A provider label alone cannot establish direct-number ownership.
+     c.verificationMethod='provider_reported';
+     c.verificationLimitation='Direct-number ownership has not been independently verified';
     }
     if(channels[channel])break;
    }
